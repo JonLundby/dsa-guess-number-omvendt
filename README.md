@@ -1,0 +1,1 @@
+[del1](https://jonlundby.github.io/dsa-guess-number-omvendt/)
