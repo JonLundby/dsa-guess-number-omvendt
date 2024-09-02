@@ -5,6 +5,7 @@ window.addEventListener("load", startApp);
 let minValue;
 let maxValue;
 let guess;
+let guessCount;
 
 function startApp() {
     hideGameBtns();
@@ -28,6 +29,7 @@ function hideGuessHistory() {
 function startGame() {
     minValue = 0;
     maxValue = 100;
+    guessCount = 0;
 
     document.querySelector("#start-paragraph").classList.add("hidden");
     document.querySelector("#btn-too-high").addEventListener("click", guessLower)
@@ -47,6 +49,7 @@ function guessNumber() {
         return; // exit guessNumber() tidligt hvis "if" statement er true
     }
     guess = Math.floor((maxValue + minValue) / 2);
+    guessCount++;
     console.log(`minVal: ${minValue} \nmaxVal: ${maxValue} \nguess(mid): ${guess}`)
     const html = `
                 <li>Jeg gætter på ${guess}</li>
@@ -66,13 +69,24 @@ function guessLower() {
 }
 
 function correctGuess() {
+    let correctComment = getCorrectGuessComment(guessCount);
     const html = `
-                <li>Hah, gotcha!! Det var ${guess} :)</li>
+                <li>Hah, gotcha!! Det var ${guess}, ${correctComment} :)</li>
                 `;
 
     document.querySelector("#guesses").insertAdjacentHTML("afterbegin", html);
     hideGameBtns();
     document.querySelector("#start-paragraph").classList.remove("hidden");
+}
+
+function getCorrectGuessComment(guessCount) {
+    if (guessCount <= 3) {
+        return "fantastisk"
+    } else if (guessCount <= 5) {
+        return "meget godt"
+    } else {
+        return "ok... "
+    }
 }
 
 function cheaterMsg() {
