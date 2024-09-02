@@ -48,15 +48,27 @@ function guessNumber() {
         console.log("Du har forsøgt at snyde men... computer says no!")
         return; // exit guessNumber() tidligt hvis "if" statement er true
     }
-    guess = Math.floor((maxValue + minValue) / 2);
+
+    console.log(`count: ${guessCount}`)
+    
+    if (guessCount == 0) {
+        let randomness = Math.random() * 10; 
+        guess = Math.floor((maxValue + minValue) / 2 + randomness); 
+    } else {
+        guess = Math.floor((maxValue + minValue) / 2);
+    }
+    
     guessCount++;
+    
     console.log(`minVal: ${minValue} \nmaxVal: ${maxValue} \nguess(mid): ${guess}`)
+    
     const html = `
                 <li>Jeg gætter på ${guess}</li>
                 `;
     
     document.querySelector("#guesses").insertAdjacentHTML("afterbegin", html);
 }
+
 
 function guessHigher() {
     minValue = guess + 1; // +1 fordi computeren allerede har gættet på det tal som minValue sættes til
