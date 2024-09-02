@@ -2,15 +2,17 @@
 
 window.addEventListener("load", startApp);
 
+let minValue;
+let maxValue;
 let guess;
 
 function startApp() {
-    hideGameElements();
+    hideGameBtns();
+    hideGuessHistory();
     document.querySelector("#start-btn").addEventListener("click", startGame);
-    document.querySelector("#guesses").classList.add("hidden");
 }
 
-function hideGameElements() {
+function hideGameBtns() {
     document.querySelector("#reply-btns").classList.add("hidden");
 }
 
@@ -19,10 +21,17 @@ function showGameElements() {
     document.querySelector("#guesses").classList.remove("hidden");
 }
 
+function hideGuessHistory() {
+    document.querySelector("#guesses").classList.add("hidden");
+}
+
 function startGame() {
+    minValue = 0;
+    maxValue = 100;
+
     document.querySelector("#start-paragraph").classList.add("hidden");
-    document.querySelector("#btn-too-high").addEventListener("click", guessNumber)
-    document.querySelector("#btn-too-low").addEventListener("click", guessNumber)
+    document.querySelector("#btn-too-high").addEventListener("click", guessLower)
+    document.querySelector("#btn-too-low").addEventListener("click", guessHigher)
     document.querySelector("#btn-correct").addEventListener("click", correctGuess)
 
     document.querySelector("#guesses").innerHTML = "";
@@ -32,7 +41,13 @@ function startGame() {
 }
 
 function guessNumber() {
-    guess = Math.ceil(Math.random() * 100);
+    if (maxValue == minValue) { // hvis maxValue og minValue er det samme så har "tænkeren" enten glemt sit tal eller snyder
+        cheaterMsg();
+        console.log("Du har forsøgt at snyde men... computer says no!")
+        return; // exit guessNumber() tidligt hvis "if" statement er true
+    }
+    guess = Math.floor((maxValue + minValue) / 2);
+    console.log(`minVal: ${minValue} \nmaxVal: ${maxValue} \nguess(mid): ${guess}`)
     const html = `
                 <li>Jeg gætter på ${guess}</li>
                 `;
@@ -40,12 +55,32 @@ function guessNumber() {
     document.querySelector("#guesses").insertAdjacentHTML("afterbegin", html);
 }
 
+function guessHigher() {
+    minValue = guess + 1; // +1 fordi computeren allerede har gættet på det tal som minValue sættes til
+    guessNumber();
+}
+
+function guessLower() {
+    maxValue = guess;
+    guessNumber();
+}
+
 function correctGuess() {
     const html = `
-                <li>Hah, gotcha!! It was ${guess} :)</li>
+                <li>Hah, gotcha!! Det var ${guess} :)</li>
                 `;
 
     document.querySelector("#guesses").insertAdjacentHTML("afterbegin", html);
-    hideGameElements();
+    hideGameBtns();
+    document.querySelector("#start-paragraph").classList.remove("hidden");
+}
+
+function cheaterMsg() {
+    const html = `
+    <li>Du må ikke ombestemme dig undervejs i spillet! Det tal du tænkte på burde være ${guess}?</li>
+    `;
+    
+    document.querySelector("#guesses").insertAdjacentHTML("afterbegin", html);
+    hideGameBtns();
     document.querySelector("#start-paragraph").classList.remove("hidden");
 }
